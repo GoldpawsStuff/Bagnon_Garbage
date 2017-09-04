@@ -2,7 +2,7 @@
 -- Using the Bagnon way to retrieve names, namespaces and stuff
 local MODULE =  ...
 local ADDON, Addon = MODULE:match("[^_]+"), _G[MODULE:match("[^_]+")]
-local ItemLevel = Bagnon:NewModule("GarbageColoring", Addon)
+local GarbageColoring = Bagnon:NewModule("GarbageColoring", Addon)
 
 -- Lua API
 local _G = _G
@@ -13,7 +13,7 @@ local GetItemInfo = _G.GetItemInfo
 
 local cache = {}
 
-ItemLevel.OnEnable = function(self)
+GarbageColoring.OnEnable = function(self)
 	hooksecurefunc(Bagnon.ItemSlot, "Update", function(self) 
 
 		local icon = self.icon or _G[self:GetName().."IconTexture"]
@@ -40,7 +40,7 @@ ItemLevel.OnEnable = function(self)
 					local _, _, itemRarity, iLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
 					local texture, itemCount, locked, quality, readable, _, _, isFiltered, noValue, itemID = GetContainerItemInfo(cache[self]:GetBag(), cache[self]:GetID())
 
-					if ((itemRarity > 0) and (not locked)) then
+					if (itemRarity and (itemRarity > 0) and (not locked)) then
 						icon:SetDesaturated(false)
 						darker:Hide()
 					else
