@@ -48,7 +48,7 @@ GarbageColoring.OnEnable = function(self)
 						iLevel = level
 					end
 
-					if (itemRarity and (itemRarity > 0) and (not locked)) then
+					if ( ((quality and (quality > 0)) or (itemRarity and (itemRarity > 0))) and (not locked) ) then
 						icon:SetDesaturated(false)
 						darker:Hide()
 					else
