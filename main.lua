@@ -39,6 +39,14 @@ GarbageColoring.OnEnable = function(self)
 			
 					local _, _, itemRarity, iLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
 					local texture, itemCount, locked, quality, readable, _, _, isFiltered, noValue, itemID = GetContainerItemInfo(cache[self]:GetBag(), cache[self]:GetID())
+	
+					-- battle pet info must be extracted from the itemlink
+					if (itemLink:find("battlepet")) then
+						local data, name = strmatch(itemLink, "|H(.-)|h(.-)|h")
+						local  _, _, level, rarity = strmatch(data, "(%w+):(%d+):(%d+):(%d+)")
+						itemRarity = tonumber(rarity) or 0
+						iLevel = level
+					end
 
 					if (itemRarity and (itemRarity > 0) and (not locked)) then
 						icon:SetDesaturated(false)

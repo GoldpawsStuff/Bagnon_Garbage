@@ -21,6 +21,7 @@ If you wish to get more involved, have some questions you can't find answers to 
 
 * Discord: [Mqnrr8t](https://discord.gg/Mqnrr8t)
 * Facebook: [@cogwerkz](https://www.facebook.com/cogwerkz)
+* Twitter: [@CogwerkzUI](https://twitter.com/CogwerkzUI)
 
 ## Buy me a beer
 Do you love this addon? Then help me fill my beer jar! Every contribution is appreciated! 
