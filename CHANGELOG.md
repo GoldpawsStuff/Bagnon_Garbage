@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.5] 2018-02-03
+### Changed
+- Added a gold coin icon for garbage that can be vendored for a price.
+- Optimized the code slightly.
+
+### Fixed
+- Fixed some issues where the darker layer would disappear.
+
 ## [1.0.4] 2018-01-29
 ### Changed
 - Added an extra check for item quality to assure some special items like some keystones gets through the rarity control. 
