@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.6] 2018-02-07
+### Changed
+- The gold coin icon is now only visible when a Merchant window is open. This is the same behavior as the Blizzard bags has. 
+
 ## [1.0.5] 2018-02-03
 ### Changed
 - Added a gold coin icon for garbage that can be vendored for a price.

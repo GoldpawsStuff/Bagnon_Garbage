@@ -12,8 +12,30 @@ local GetContainerItemInfo = _G.GetContainerItemInfo
 local GetItemInfo = _G.GetItemInfo
 
 local cache = {}
+local junk = {}
+
+local MERCHANT_VISIBLE
 
 GarbageColoring.OnEnable = function(self)
+
+	local updateJunkIcon = function()
+		for junkIcon, show in pairs(junk) do
+			junkIcon:SetShown(MERCHANT_VISIBLE and show)
+		end
+	end
+
+	local frame = CreateFrame("Frame")
+	frame:RegisterEvent("MERCHANT_SHOW")
+	frame:RegisterEvent("MERCHANT_CLOSED")
+	frame:SetScript("OnEvent", function(self, event, ...) 
+		if (event == "MERCHANT_SHOW") then
+			MERCHANT_VISIBLE = true
+		elseif (event == "MERCHANT_CLOSED") then 
+			MERCHANT_VISIBLE = false
+		end
+		updateJunkIcon()
+	end)
+
 	hooksecurefunc(Bagnon.ItemSlot, "Update", function(self) 
 
 		local icon = self.icon or _G[self:GetName().."IconTexture"]
@@ -58,8 +80,10 @@ GarbageColoring.OnEnable = function(self)
 
 				darker.tempLocked = false
 			end)
-				
+
 		end
+
+		local showJunk = false
 
 		local itemLink = self:GetItem()
 		if (itemLink and icon) then
@@ -79,15 +103,10 @@ GarbageColoring.OnEnable = function(self)
 			if notGarbage then
 				icon:SetDesaturated(false)
 				cache[icon]:Hide()
-				if self.JunkIcon then 
-					self.JunkIcon:Hide()
-				end
 			else
 				icon:SetDesaturated(true)
 				cache[icon]:Show()
-				if self.JunkIcon then 
-					self.JunkIcon:SetShown((quality == 0) and (not noValue))
-				end
+				showJunk = (quality == 0) and (not noValue)
 			end 
 		else
 			if (not locked) then 
@@ -96,9 +115,11 @@ GarbageColoring.OnEnable = function(self)
 			if cache[icon] then 
 				cache[icon]:Hide()
 			end
-			if self.JunkIcon then 
-				self.JunkIcon:Hide()
-			end
+		end
+
+		if self.JunkIcon then 
+			junk[self.JunkIcon] = showJunk
+			self.JunkIcon:SetShown(MERCHANT_VISIBLE and showJunk)
 		end
 
 	end)
