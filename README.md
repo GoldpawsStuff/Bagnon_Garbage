@@ -12,9 +12,9 @@ If not, and you need to do this manually, then download and unzip it to your `Wo
 Also, make sure the game is closed when moving new files into the addon directory as it is unable to discover new files when it's already running. And remember to check the "load out of date addons" checkbox in the addon listing on the character selection screen, or the game won't load the addon. The latter should not be a problem in Legion as the addon is always labeled with the most recent version it supports, but for game clients running older versions of WoW, it is vital to check this box to load the addon!
 
 ## Report bugs, suggest features, development progress
-Bug reports and feature suggestions are all done through GitHub's Issue tracker linked below. 
+Bug reports and feature suggestions are all done through BitBucket's Issue tracker linked below. 
 
-* Issues: [github.com/cogwerkz/Bagnon_Garbage/issues](https://github.com/cogwerkz/Bagnon_Garbage/issues)
+* Issues: [bitbucket.org/bigcogs/bagnon_boe/issues](https://bitbucket.org/bigcogs/bagnon_boe/issues)
 
 ## Join the community
 If you wish to get more involved, have some questions you can't find answers to anywhere else or simply just wish to stop by and say hello, we have both a [discord](https://discordapp.com/) server and a facebook page.

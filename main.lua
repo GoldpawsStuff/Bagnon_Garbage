@@ -43,7 +43,7 @@ GarbageColoring.OnEnable = function(self)
 
 			local darker = self:CreateTexture()
 			darker:Hide()
-			darker:SetDrawLayer("ARTWORk")
+			darker:SetDrawLayer("ARTWORK")
 			darker:SetAllPoints(icon)
 			darker.owner = self
 
@@ -101,7 +101,9 @@ GarbageColoring.OnEnable = function(self)
 			
 			local notGarbage = ((quality and (quality > 0)) or (itemRarity and (itemRarity > 0))) and (not locked) 
 			if notGarbage then
-				icon:SetDesaturated(false)
+				if (not locked) then 
+					icon:SetDesaturated(false)
+				end
 				cache[icon]:Hide()
 			else
 				icon:SetDesaturated(true)
@@ -109,7 +111,7 @@ GarbageColoring.OnEnable = function(self)
 				showJunk = (quality == 0) and (not noValue)
 			end 
 		else
-			if (not locked) then 
+			if icon then 
 				icon:SetDesaturated(false)
 			end
 			if cache[icon] then 
