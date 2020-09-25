@@ -29,32 +29,6 @@ local GetItemInfo = _G.GetItemInfo
 -- Local Cache
 local Cache_ItemGarbage = {}
 
--- Flag tracking merchant frame visibility
---local MERCHANT_VISIBLE
-
--- Just keep this running, regardless of other stuff (?)
--- *might be conflicts with the standard Update function here. 
---local MerchantTracker = CreateFrame("Frame")
---MerchantTracker:RegisterEvent("MERCHANT_SHOW")
---MerchantTracker:RegisterEvent("MERCHANT_CLOSED")
---MerchantTracker:SetScript("OnEvent", function(self, event, ...) 
---	if (event == "MERCHANT_SHOW") then
---		MERCHANT_VISIBLE = true
---	elseif (event == "MERCHANT_CLOSED") then 
---		MERCHANT_VISIBLE = false
---	end
---	for button,ItemGarbage in pairs(Cache_ItemGarbage) do
---		local JunkIcon = button.JunkIcon
---		if JunkIcon then
---			if (MERCHANT_VISIBLE and ItemGarbage.showJunk) then 
---				JunkIcon:Show()
---			else 
---				JunkIcon:Hide()
---			end
---		end
---	end
---end)
-
 -----------------------------------------------------------
 -- Utility Functions
 -----------------------------------------------------------
@@ -71,44 +45,43 @@ end
 -- Cache & Creation
 -----------------------------------------------------------
 local Cache_GetItemGarbage = function(button)
-	
-	local Icon = button.icon or _G[button:GetName().."IconTexture"]
+	if (not Cache_ItemGarbage[button]) then
+		local Icon = button.icon or _G[button:GetName().."IconTexture"]
+		local ItemGarbage = button:CreateTexture()
+		ItemGarbage:Hide()
+		ItemGarbage:SetDrawLayer("ARTWORK")
+		ItemGarbage:SetAllPoints(Icon)
+		ItemGarbage:SetColorTexture(51/255 * 1/5,  17/255 * 1/5,   6/255 * 1/5, .6)
+		ItemGarbage.owner = button
 
-	local ItemGarbage = button:CreateTexture()
-	ItemGarbage:Hide()
-	ItemGarbage:SetDrawLayer("ARTWORK")
-	ItemGarbage:SetAllPoints(Icon)
-	ItemGarbage:SetColorTexture(51/255 * 1/5,  17/255 * 1/5,   6/255 * 1/5, .6)
-	ItemGarbage.owner = button
-
-	hooksecurefunc(Icon, "SetDesaturated", function() 
-		if ItemGarbage.tempLocked then 
-			return
-		end
-
-		ItemGarbage.tempLocked = true
-
-		local itemLink = button:GetItem()
-		if itemLink then 
-			local _, _, itemRarity, iLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
-			local texture, itemCount, locked, quality, readable, _, _, isFiltered, noValue, itemID = GetContainerItemInfo(button:GetBag(), button:GetID())
-		
-			local isBattlePet, battlePetLevel, battlePetRarity = GetBattlePetInfo(itemLink)
-			if isBattlePet then 
-				itemRarity = battlePetRarity
+		hooksecurefunc(Icon, "SetDesaturated", function() 
+			if ItemGarbage.tempLocked then 
+				return
 			end
 
-			if not(((quality and (quality > 0)) or (itemRarity and (itemRarity > 0))) and (not locked)) then
-				Icon:SetDesaturated(true)
-			end 
-		end
+			ItemGarbage.tempLocked = true
 
-		ItemGarbage.tempLocked = false
-	end)
+			local itemLink = button:GetItem()
+			if itemLink then 
+				local _, _, itemRarity, iLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
+				local texture, itemCount, locked, quality, readable, _, _, isFiltered, noValue, itemID = GetContainerItemInfo(button:GetBag(), button:GetID())
+			
+				local isBattlePet, battlePetLevel, battlePetRarity = GetBattlePetInfo(itemLink)
+				if isBattlePet then 
+					itemRarity = battlePetRarity
+				end
 
-	Cache_ItemGarbage[button] = ItemGarbage
+				if not(((quality and (quality > 0)) or (itemRarity and (itemRarity > 0))) and (not locked)) then
+					Icon:SetDesaturated(true)
+				end 
+			end
 
-	return ItemGarbage
+			ItemGarbage.tempLocked = false
+		end)
+
+		Cache_ItemGarbage[button] = ItemGarbage
+	end
+	return Cache_ItemGarbage[button]
 end
 
 -----------------------------------------------------------
@@ -155,33 +128,15 @@ local Update = function(self)
 			end
 		end
 
-		--local JunkIcon = self.JunkIcon
-		--if JunkIcon then 
-		--	local ItemGarbage = Cache_ItemGarbage[self] 
-		--	if ItemGarbage then 
-		--		ItemGarbage.showJunk = showJunk
-		--	end 
-		--	if (MERCHANT_VISIBLE and showJunk) then 
-		--		JunkIcon:Show()
-		--	else
-		--		JunkIcon:Hide()
-		--	end
-		--end
-
 	else
 		if Cache_ItemGarbage[self] then 
 			Cache_ItemGarbage[self]:Hide()
 			Cache_ItemGarbage[self].showJunk = nil
 		end
-		--local JunkIcon = self.JunkIcon
-		--if JunkIcon then 
-		--	if (MERCHANT_VISIBLE and showJunk) then 
-		--		JunkIcon:Show()
-		--	else
-		--		JunkIcon:Hide()
-		--	end
-		--end
 	end
 end 
 
-hooksecurefunc(Bagnon.ItemSlot, "Update", Update)
+local item = Bagnon.ItemSlot or Bagnon.Item
+if (item) and (item.Update) then
+	hooksecurefunc(item, "Update", Update)
+end
