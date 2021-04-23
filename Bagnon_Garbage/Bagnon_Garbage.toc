@@ -10,7 +10,7 @@
 ## X-Discord: https://discord.gg/MUSfWXd
 ## X-Website: https://www.patreon.com/goldpawsstuff
 ## X-Curse-Project-ID: 276936
-## X-Wago-ID: 
+## X-Wago-ID: 2jK8YbGy
 ## X-License: Custom
 
 ## RequiredDeps: Bagnon
