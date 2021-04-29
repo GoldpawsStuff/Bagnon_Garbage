@@ -26,24 +26,8 @@ local string_match = string.match
 local GetContainerItemInfo = _G.GetContainerItemInfo
 local GetItemInfo = _G.GetItemInfo
 
--- Local Cache
 local Cache_ItemGarbage = {}
 
------------------------------------------------------------
--- Utility Functions
------------------------------------------------------------
--- Check if it's a caged battle pet
-local GetBattlePetInfo = function(itemLink)
-	if (string_find(itemLink, "battlepet")) then
-		local data, name = string_match(itemLink, "|H(.-)|h(.-)|h")
-		local  _, _, level, rarity = string_match(data, "(%w+):(%d+):(%d+):(%d+)")
-		return true, level or 1, tonumber(rarity) or 0
-	end
-end
-
------------------------------------------------------------
--- Cache & Creation
------------------------------------------------------------
 local Cache_GetItemGarbage = function(button)
 	if (not Cache_ItemGarbage[button]) then
 		local Icon = button.icon or _G[button:GetName().."IconTexture"]
@@ -55,27 +39,25 @@ local Cache_GetItemGarbage = function(button)
 		ItemGarbage.owner = button
 
 		hooksecurefunc(Icon, "SetDesaturated", function() 
-			if ItemGarbage.tempLocked then 
+			if (ItemGarbage.tempLocked) then 
 				return
 			end
-
 			ItemGarbage.tempLocked = true
-
 			local itemLink = button:GetItem()
-			if itemLink then 
-				local _, _, itemRarity, iLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
-				local texture, itemCount, locked, quality, readable, _, _, isFiltered, noValue, itemID = GetContainerItemInfo(button:GetBag(), button:GetID())
-			
-				local isBattlePet, battlePetLevel, battlePetRarity = GetBattlePetInfo(itemLink)
-				if isBattlePet then 
-					itemRarity = battlePetRarity
+			if (itemLink) then 
+				local itemRarity
+				local _, _, locked, quality, _, _, _, _, noValue = GetContainerItemInfo(button:GetBag(),button:GetID())
+				if (string_find(itemLink, "battlepet")) then
+					local data = string_match(itemLink, "|H(.-)|h(.-)|h")
+					local  _, _, _, rarity = string_match(data, "(%w+):(%d+):(%d+):(%d+)")
+					itemRarity = tonumber(rarity) or 0
+				else
+					_, _, itemRarity = GetItemInfo(itemLink)
 				end
-
 				if not(((quality and (quality > 0)) or (itemRarity and (itemRarity > 0))) and (not locked)) then
 					Icon:SetDesaturated(true)
 				end 
 			end
-
 			ItemGarbage.tempLocked = false
 		end)
 
@@ -89,27 +71,19 @@ end
 -----------------------------------------------------------
 local Update = function(self)
 	local itemLink = self:GetItem() 
-	if itemLink then
-
-		-- Get some blizzard info about the current item
-		local itemName, _itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo(itemLink)
-		local effectiveLevel, previewLevel, origLevel = GetDetailedItemLevelInfo(itemLink)
-		local isBattlePet, battlePetLevel, battlePetRarity = GetBattlePetInfo(itemLink)
-
-		-- Retrieve the itemID from the itemLink
-		local itemID = tonumber(string_match(itemLink, "item:(%d+)"))
-
-		---------------------------------------------------
-		-- ItemGarbage
-		---------------------------------------------------
-		local Icon = self.icon or _G[self:GetName().."IconTexture"]
+	if (itemLink) then
 		local showJunk = false
-
-		if Icon then 
-			local texture, itemCount, locked, quality, readable, _, _, isFiltered, noValue, itemID = GetContainerItemInfo(self:GetBag(), self:GetID())
-
-			local notGarbage = ((quality and (quality > 0)) or (itemRarity and (itemRarity > 0))) and (not locked) 
-			if notGarbage then
+		local Icon = self.icon or _G[self:GetName().."IconTexture"]
+		if (Icon) then 
+			local _, _, locked, quality, _, _, _, _, noValue = GetContainerItemInfo(self:GetBag(),self:GetID())
+			local notGarbage = (quality and (quality > 0)) and (not locked) 
+			if (not notGarbage) and (not locked)  then
+				local _, _, itemRarity = GetItemInfo(itemLink)
+				if (itemRarity and (itemRarity > 0)) then
+					notGarbage = true
+				end
+			end
+			if (notGarbage) then
 				if (not locked) then 
 					Icon:SetDesaturated(false)
 				end
@@ -127,7 +101,6 @@ local Update = function(self)
 				Cache_ItemGarbage[self]:Hide()
 			end
 		end
-
 	else
 		if Cache_ItemGarbage[self] then 
 			Cache_ItemGarbage[self]:Hide()
