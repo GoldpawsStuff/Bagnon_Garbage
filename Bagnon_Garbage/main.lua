@@ -12,6 +12,7 @@ if (function(addon)
 		end
 	end
 end)("Bagnon_ItemInfo") then 
+	print("|cffff1111"..(...).." was auto-disabled.")
 	return 
 end 
 
