@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.41-Release] 2022-10-25
+- Bumped retail version to the 10.0.0 patch.
+
 ## [2.0.40-RC] 2022-10-12
 - Full performance rewrite to take much better advantage of Bagnon and Wildpant's APIs.
 
