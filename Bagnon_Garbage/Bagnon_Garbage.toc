@@ -1,4 +1,4 @@
-## Interface: 110107
+## Interface: 110107, 50500, 11507
 ## IconTexture: Interface\Addons\BagBrother\Art\Bagnon-Plugin.tga
 
 ## Plain Title: Bagnon Garbage
@@ -12,8 +12,8 @@
 ## X-Wago-ID: 2jK8YbGy
 ## X-License: Custom
 
-## OptionalDeps: TaintLess
-## RequiredDeps: Bagnon
+## OptionalDeps: TaintLess, Bagnon, Bagnonium
+## RequiredDeps: BagBrother
 
 embeds.xml
 dispatcher.lua
